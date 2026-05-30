@@ -1,0 +1,17 @@
+# Dependencies
+node_modules/
+
+# Environment variables (MongoDB password safe rahega)
+.env
+.env.local
+
+# Production build
+dist/
+build/
+
+# Logs
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db

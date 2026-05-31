@@ -1,4 +1,5 @@
-import { Menu, Plus, Search, Bell } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Menu, Plus, Search, Bell, UserCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface NavbarProps {
@@ -7,6 +8,33 @@ interface NavbarProps {
 }
 
 export default function Navbar({ onMenuClick, onAddClick }: NavbarProps) {
+  const [profilePic, setProfilePic] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const loadProfilePic = () => {
+      const savedPic = localStorage.getItem('profilePic');
+      if (savedPic) setProfilePic(savedPic);
+    };
+    loadProfilePic();
+    window.addEventListener('profilePicUpdated', loadProfilePic);
+    return () => window.removeEventListener('profilePicUpdated', loadProfilePic);
+  }, []);
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        setProfilePic(base64String);
+        localStorage.setItem('profilePic', base64String);
+        window.dispatchEvent(new Event('profilePicUpdated'));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   return (
     <header className="flex items-center justify-between px-6 py-4 glass z-10 sticky top-0 border-b border-white/5">
       <div className="flex items-center gap-4">
@@ -32,10 +60,24 @@ export default function Navbar({ onMenuClick, onAddClick }: NavbarProps) {
           <span className="hidden sm:inline">Add Expense</span>
         </motion.button>
         
-        <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-secondary to-purple-500 p-0.5 cursor-pointer">
+        <div 
+          className="w-9 h-9 rounded-full bg-gradient-to-tr from-secondary to-purple-500 p-0.5 cursor-pointer"
+          onClick={() => fileInputRef.current?.click()}
+        >
           <div className="w-full h-full rounded-full bg-slate-900 border-2 border-transparent overflow-hidden">
-            <img src="https://i.pravatar.cc/150?img=68" alt="Profile" className="w-full h-full object-cover" />
+            {profilePic ? (
+              <img src={profilePic} alt="Profile" className="w-full h-full object-cover" />
+            ) : (
+              <UserCircle className="w-full h-full text-gray-400 bg-slate-900" />
+            )}
           </div>
+          <input 
+            type="file" 
+            ref={fileInputRef} 
+            onChange={handleImageChange} 
+            accept="image/*" 
+            className="hidden" 
+          />
         </div>
       </div>
     </header>

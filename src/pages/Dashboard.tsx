@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowUpRight, ArrowDownRight, Wallet, PiggyBank, TrendingUp, CreditCard } from 'lucide-react';
+import { ArrowUpRight, ArrowDownRight, Wallet, PiggyBank, TrendingUp, CreditCard, UserCircle, Camera } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { fetchTransactions } from '../api/transactionApi.js';
 import { formatCurrency } from '../utils/formatCurrency.js';
@@ -14,6 +14,32 @@ export default function Dashboard() {
   const [transactions, setTransactions] = useState<any[]>([]);
   const [monthlyData, setMonthlyData] = useState<any[]>([]);
   const [categoryData, setCategoryData] = useState<any[]>([]);
+  const [profilePic, setProfilePic] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const loadProfilePic = () => {
+      const savedPic = localStorage.getItem('profilePic');
+      if (savedPic) setProfilePic(savedPic);
+    };
+    loadProfilePic();
+    window.addEventListener('profilePicUpdated', loadProfilePic);
+    return () => window.removeEventListener('profilePicUpdated', loadProfilePic);
+  }, []);
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        setProfilePic(base64String);
+        localStorage.setItem('profilePic', base64String);
+        window.dispatchEvent(new Event('profilePicUpdated'));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   useEffect(() => {
     const loadData = async () => {
@@ -60,9 +86,27 @@ export default function Dashboard() {
   return (
     <motion.div variants={container} initial="hidden" animate="show" className="space-y-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-white">Dashboard Overview</h1>
-          <p className="text-gray-400 text-sm mt-1">Welcome back, here's your financial summary.</p>
+        <div className="flex items-center gap-4">
+          <div className="relative inline-block shrink-0">
+            <div className="w-14 h-14 rounded-full bg-gray-900 border-2 border-gray-700 overflow-hidden flex items-center justify-center shadow-lg">
+              {profilePic ? (
+                <img src={profilePic} alt="Profile" className="w-full h-full object-cover" />
+              ) : (
+                <UserCircle className="w-8 h-8 text-gray-400" />
+              )}
+            </div>
+            <button 
+              onClick={() => fileInputRef.current?.click()}
+              className="absolute bottom-0 right-0 p-1 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors shadow-lg border border-gray-800"
+            >
+              <Camera className="w-3 h-3" />
+            </button>
+            <input type="file" ref={fileInputRef} onChange={handleImageChange} accept="image/*" className="hidden" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-white">Dashboard Overview</h1>
+            <p className="text-gray-400 text-sm mt-1">Welcome back, here's your financial summary.</p>
+          </div>
         </div>
         <div className="glass px-4 py-2 rounded-lg flex items-center gap-2 text-sm text-gray-300">
           <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>

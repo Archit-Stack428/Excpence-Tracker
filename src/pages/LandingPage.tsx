@@ -11,7 +11,7 @@ export default function LandingPage() {
       <nav className="relative z-10 flex items-center justify-between px-6 py-6 max-w-7xl mx-auto">
         <div className="flex items-center gap-2 text-2xl font-bold text-white">
           <Wallet className="w-8 h-8 text-primary" />
-          <span>Fin<span className="text-primary">Track</span></span>
+          <span>Expense Tracker</span>
         </div>
         <div className="flex items-center gap-4">
           <Link to="/login" className="text-gray-300 hover:text-white font-medium transition-colors">Log in</Link>
@@ -22,7 +22,7 @@ export default function LandingPage() {
       <main className="relative z-10 flex flex-col items-center justify-center px-6 pt-20 pb-32 text-center max-w-5xl mx-auto">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass border-primary/30 text-primary mb-8">
           <span className="relative flex h-3 w-3"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span><span className="relative inline-flex rounded-full h-3 w-3 bg-primary"></span></span>
-          <span className="text-sm font-medium">FinTrack 2.0 is now live</span>
+          <span className="text-sm font-medium">Expense Tracker 2.0 is now live</span>
         </motion.div>
 
         <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }} className="text-5xl md:text-7xl font-extrabold text-white tracking-tight leading-tight mb-6">

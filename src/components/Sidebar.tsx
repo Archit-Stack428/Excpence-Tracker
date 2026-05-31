@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home, PieChart, Clock, CreditCard, Settings, X, LogOut } from 'lucide-react';
+import { Home, PieChart, Clock, CreditCard, Settings, X, LogOut, Wallet } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 interface SidebarProps {
@@ -31,10 +31,8 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
       <aside className={`fixed md:static inset-y-0 left-0 z-50 w-64 bg-gray-900 border-r border-gray-800 transform transition-transform duration-200 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 flex flex-col`}>
         <div className="flex items-center justify-between p-6">
           <div className="text-xl font-bold text-white flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
-              <span className="text-white text-lg">F</span>
-            </div>
-            FinTrack
+            <Wallet className="w-8 h-8 text-blue-500" />
+            Expense Tracker
           </div>
           <button className="md:hidden text-gray-400 hover:text-white" onClick={() => setIsOpen(false)}>
             <X className="w-6 h-6" />
